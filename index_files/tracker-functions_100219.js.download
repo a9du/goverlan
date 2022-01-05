@@ -1,0 +1,244 @@
+var currentUrl = window.location.pathname;
+var currentLocationHref = window.location.href;
+
+// Read cookie value
+function readCookie(name) {
+    var cookiename = name + "=";
+    var ca = document.cookie.split(';');
+    for(var i=0;i < ca.length;i++) {
+    var c = ca[i];
+    while (c.charAt(0)==' ') c = c.substring(1,c.length);
+        if (c.indexOf(cookiename) == 0) return c.substring(cookiename.length,c.length);
+    }
+    return null;
+};
+
+// From w3schools
+function getCookie(cname) {
+  var name = cname + "=";
+
+  var ca = document.cookie.split(';');
+  for(var i = 0; i < ca.length; i++) {
+    var c = ca[i];
+    while (c.charAt(0) == ' ') {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0) {
+
+      return c.substring(name.length, c.length);
+    }
+  }
+
+  return "";
+
+}
+
+// Get URL parameter val
+function getQueryStringValue (key) {
+
+    return decodeURIComponent(window.location.search.replace(new RegExp("^(?:.*[&\\?]" + encodeURIComponent(key).replace(/[\.\+\*]/g, "\\$&") + "(?:\\=([^&]*))?)?.*$", "i"), "$1"));
+
+}
+
+
+  // Extract paramters from URL
+  var getUrlParameter = function getUrlParameter(sParam) {
+  var sPageURL = window.location.search.substring(1),
+      sURLVariables = sPageURL.split('&'),
+      sParameterName,
+      i;
+
+      for (i = 0; i < sURLVariables.length; i++) {
+          sParameterName = sURLVariables[i].split('=');
+
+          if (sParameterName[0] === sParam) {
+              return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+          }
+      }
+  };
+
+ // to grab utm from url
+  var utmUrlSource = getUrlParameter('utm_source');
+  var utmUrlMedium = getUrlParameter('utm_medium');
+  var utmUrlCampaign = getUrlParameter('utm_campaign');
+  var utmUrlTerm = getUrlParameter("utm_term");
+  var utmUrlContent = getUrlParameter("utm_content"); // added 100319
+
+
+  var gclId = getUrlParameter("gclid");
+  var pdfParam = getUrlParameter("pdf");
+
+  var documentReferrerVar = document.referrer;
+
+ // utm only since hubspot will handle the first and last,
+ // I will just pass the utms as they come. KA 01-12-2021
+ var utmSourceCookieName = getCookie("utm_source");
+ var utmMediumCookieName = getCookie("utm_medium");
+ var utmCampaignCookieName = getCookie("utm_campaign");
+ var utmTermCookieName = getCookie("utm_term");
+ var utmContentCookieName = getCookie("utm_content"); // added 100319
+
+  // utm first
+  var utmSourceCookieNameFirst = getCookie("utm_source_first");
+  var utmMediumCookieNameFirst = getCookie("utm_medium_first");
+  var utmCampaignCookieNameFirst = getCookie("utm_campaign_first");
+  var utmTermCookieNameFirst = getCookie("utm_term_first");
+  var utmContentCookieNameFirst = getCookie("utm_content_first"); // added 100319
+
+  // utm last
+  var utmSourceCookieNameLast = getCookie("utm_source_last");
+  var utmMediumCookieNameLast = getCookie("utm_medium_last");
+  var utmCampaignCookieNameLast = getCookie("utm_campaign_last");
+  var utmTermCookieNameLast = getCookie("utm_term_last");
+  var utmContentCookieNameLast = getCookie("utm_content_last"); // Added 100319
+
+  var gclIdCookieNameFirst = getCookie("gclid_cookie"); // Added 100219
+  var gclIdCookieNameLast = getCookie("gclid_cookie_last"); // Added 070919
+
+  var documentReferrerCookie = getCookie("browser_history");
+
+  var utmFirstDiscovery = getCookie("utm_first_discovery");
+  var utmLastDiscovery = getCookie("utm_last_discovery");
+
+
+  // Set an expiration date to be 10 days
+  var date10yr = new Date();
+  date10yr.setDate(date10yr.getDate()+3650);
+
+  var date30day = new Date();
+  date30day.setDate(date30day.getDate()+30);
+
+  var newDiscoveryVar = new Date().toISOString();
+
+  console.log("newDiscoveryVar val "+newDiscoveryVar);
+
+  if ( utmUrlSource ) {
+
+    document.cookie = 'utm_source='+utmUrlSource+';domain=goverlan.com;path=/';
+
+    if (!utmSourceCookieNameFirst) {
+
+      document.cookie = 'utm_source_first='+utmUrlSource+';expires='+date10yr.toGMTString()+';path=/';
+
+      document.cookie = 'utm_first_discovery='+newDiscoveryVar+';expires='+date10yr.toGMTString()+';path=/;'
+
+    }
+
+    if (utmSourceCookieNameFirst && utmUrlSource != utmSourceCookieNameFirst) {
+
+      document.cookie = 'utm_source_last='+utmUrlSource+';expires='+date10yr.toGMTString()+';path=/';
+
+      document.cookie = 'utm_last_discovery='+newDiscoveryVar+';expires='+date10yr.toGMTString()+';path=/;'
+
+    }
+  }
+
+
+  if ( utmUrlMedium ) {
+
+    document.cookie = 'utm_medium='+utmUrlMedium+';domain=goverlan.com;path=/';
+
+    if (!utmMediumCookieNameFirst) {
+
+      document.cookie = 'utm_medium_first='+utmUrlMedium+';expires='+date10yr.toGMTString()+';path=/';
+
+    }
+
+    if (utmMediumCookieNameFirst && utmUrlMedium != utmMediumCookieNameFirst) {
+
+      document.cookie = 'utm_medium_last='+utmUrlMedium+';expires='+date10yr.toGMTString()+';path=/';
+
+    }
+  }
+
+
+if ( utmUrlCampaign ) {
+
+  document.cookie = 'utm_campaign='+utmUrlCampaign+';domain=goverlan.com;path=/';
+
+
+    if (!utmCampaignCookieNameFirst) {
+
+      document.cookie = 'utm_campaign_first='+utmUrlCampaign+';expires='+date10yr.toGMTString()+';path=/';
+    }
+
+    if (utmCampaignCookieNameFirst && utmUrlCampaign != utmCampaignCookieNameFirst) {
+
+      document.cookie = 'utm_campaign_last='+utmUrlCampaign+';expires='+date10yr.toGMTString()+';path=/';
+
+    }
+  }
+
+
+if (utmUrlTerm) {
+
+    document.cookie = 'utm_term_first='+utmUrlTerm+';;domain=goverlan.com;path=/';
+
+
+    if (!utmTermCookieNameFirst) {
+
+        document.cookie = 'utm_term_first='+utmUrlTerm+';expires='+date10yr.toGMTString()+';path=/';
+
+    }
+
+    if (utmTermCookieNameFirst && utmUrlTerm != utmTermCookieNameFirst) {
+
+        document.cookie = 'utm_term_last='+utmUrlTerm+';expires='+date10yr.toGMTString()+';path=/';
+
+    }
+  }
+
+
+  if(utmUrlContent) {
+
+    document.cookie = 'utm_content='+utmUrlContent+';domain=goverlan.com;path=/';
+
+    if (!utmContentCookieNameFirst) {
+
+      document.cookie = 'utm_content_first='+utmUrlContent+';expires='+date10yr.toGMTString()+';path=/';
+
+    }
+
+    if (utmContentCookieNameFirst && utmUrlContent != utmContentCookieNameFirst) {
+
+        document.cookie = 'utm_content_last='+utmUrlContent+';expires='+date10yr.toGMTString()+';path=/';
+
+    }
+  }
+
+
+  if ( gclId ) {
+    if ( !gclIdCookieNameFirst) {
+
+        document.cookie = 'gclid_cookie='+gclId+';expires='+date10yr.toGMTString()+';path=/';
+
+    }
+
+    if (gclIdCookieNameFirst && gclId != gclIdCookieNameFirst) {
+
+        document.cookie = 'gclid_cookie_last='+gclId+';expires='+date10yr.toGMTString()+';path=/';
+
+    }
+  }
+
+  function domain_from_url(url) {
+    var result
+    var match
+    if (match = url.match(/^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n\?\=]+)/im)) {
+        result = match[1]
+        if (match = result.match(/^[^\.]+\.(.+\..+)$/)) {
+            result = match[1]
+        }
+    }
+    return result
+  }
+
+  if ( documentReferrerVar ) {
+
+    if (!documentReferrerCookie) {
+
+      document.cookie = 'browser_history='+documentReferrerVar+';expires='+date10yr.toGMTString()+';path=/';
+
+    }
+
+  }
